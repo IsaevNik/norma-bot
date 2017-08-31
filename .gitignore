@@ -1,0 +1,10 @@
+env
+*.pyc
+*.pyc
+.idea
+.DS_Store
+__pycache__
+logs/
+!logs/.gitkeep
+settings.py
+
