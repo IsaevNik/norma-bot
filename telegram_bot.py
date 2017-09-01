@@ -115,7 +115,8 @@ class TelegramBot:
             self.send_another_payment_carousel('Подождите пока обрабатывается платёж, '
                                                'можете попробовать оплатить ещё раз.')
         elif status == CacheUser.SUCCESS:
-            self.send_another_payment_carousel('Наше мероприятие состоится совсем скоро')
+            bot.send_message(self.chat_id, 'Наше мероприятие состоится совсем скоро')
+
         else:
             self.reset_all_progress('Я не знаю такой команды, придётся начать всё заново.')
 
