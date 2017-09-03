@@ -13,12 +13,13 @@ class CacheUser:
     ENTER_NAME, START_PAYMENT, SUCCESS, FAIL = 4, 5, 6, 7
     STATUSES = [STARTED, ENTER_COUNT, ENTER_PROMOCODE, START_PAYMENT, SUCCESS, FAIL, ENTER_TYPE, ENTER_NAME]
     STATUS, CHAT_ID, COUNT, PROMO_CODE, NAME = 'status', 'chat_id', 'count', 'promo_code', 'name'
-    ID, ENTER_CODE = 'id', 'enter_code'
+    ID, ENTER_CODE, IS_PROMOTER = 'id', 'enter_code', 'is_promoter'
 
     def __init__(self, user_id, chat_id):
         self.user_id = str(user_id)
         if not r.exists(self.key):
             r.hset(self.key, self.CHAT_ID, chat_id)
+            r.hset(self.key, self.IS_PROMOTER, 0)
 
     @property
     def key(self):
@@ -92,3 +93,15 @@ class CacheUser:
     @enter_code.setter
     def enter_code(self, value):
         self.set(self.ENTER_CODE, value)
+
+    @property
+    def is_promoter(self):
+        value = self.get(self.IS_PROMOTER)
+        if not value:
+            return False
+        return bool(int(value))
+
+    @is_promoter.setter
+    def is_promoter(self, value):
+        self.set(self.IS_PROMOTER, value)
+
