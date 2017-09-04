@@ -5,7 +5,7 @@ import json
 import time
 import os
 from flask import Flask, request
-from settings import HOST, PORT, TOKEN
+from settings import HOST, PORT, TOKEN, DEBUG
 from utils import check_auth
 
 app = Flask(__name__)
@@ -61,4 +61,4 @@ if __name__ == '__main__':
     set_webhook()
     app.run(host='0.0.0.0',
             port=PORT,
-            debug=True)
+            debug=DUBUG)
