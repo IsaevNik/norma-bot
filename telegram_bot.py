@@ -50,6 +50,9 @@ class TelegramBot:
 
     def execute_command(self):
         status = self.client.status
+        if settings.FINISH_SALE:
+            bot.send_message(self.chat_id, 'Предпродажа билетов окончена.')
+            return
         if status is None:
             self.client.status = CacheUser.STARTED
             bot.send_message(self.chat_id, self.hello_message)
