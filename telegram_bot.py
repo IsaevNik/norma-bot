@@ -159,7 +159,7 @@ class TelegramBot:
             self.client.delete(CacheUser.COUNT)
             self.client.delete(CacheUser.PROMO_CODE)
             self.client.delete(CacheUser.NAME)
-            self.remove_keyboard_carousel('Сколько билетов вы хотите купить?')
+            self.send_numeric_carousel('Сколько билетов вы хотите купить?')
 
     def send_payment_type_carousel(self, text):
         custom_keyboard = [[self.with_promocode % (self.client.count * settings.COST_WITH_PROMO)],
