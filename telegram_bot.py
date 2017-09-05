@@ -16,7 +16,7 @@ class TelegramBot:
     go_to_payment = 'Перейти к оплате'
     exit = 'назад'
     reset = 'Вернуться в начало'
-    go_to_payment_another = 'Оплатить'
+    go_to_payment_another = 'Получить новую ссылку'
     get_statistic = 'Получить статистику'
     hello_message = 'Вас приветствует команда NORMA! ' \
                     'Здесь вы можете преобрести билеты на предстоящие мероприятия.' \
@@ -127,15 +127,18 @@ class TelegramBot:
             data_with_link = self.norma_api.create_order(self.client)
             bot.send_message(self.chat_id, 'Для оплаты перейдите по ссылке {}'.format(data_with_link.get('link')))
             self.client.status = CacheUser.START_PAYMENT
-        elif status == CacheUser.START_PAYMENT and self.message_text == self.go_to_payment_another:
-            self.send_another_payment_carousel('Подождите пока обрабатывается платёж, '
+            self.send_another_payment_carousel('Платёж обрабатывается некоторое время, '
                                                'можете попробовать оплатить ещё раз.')
+
+        elif status == CacheUser.START_PAYMENT and self.message_text == self.go_to_payment_another:
             data_with_link = self.norma_api.create_order(self.client)
             message = ('Для оплаты перейдите по ссылке {}'.format(data_with_link.get('link')))
-            self.remove_keyboard_carousel(message)
-        elif status == CacheUser.START_PAYMENT:
-            self.send_another_payment_carousel('Подождите пока обрабатывается платёж, '
+            bot.send_message(self.chat_id, message)
+            self.send_another_payment_carousel('Платёж обрабатывается некоторое время, '
                                                'можете попробовать оплатить ещё раз.')
+
+        elif status == CacheUser.START_PAYMENT and self.message_text == self.reset:
+            self.reset_all_progress()
 
         elif status == CacheUser.SUCCESS and self.client.is_promoter and self.message_text == self.get_statistic:
             statistic = self.norma_api.get_statistic(self.client)
@@ -154,11 +157,12 @@ class TelegramBot:
     def reset_all_progress(self, text=None):
         if text:
             bot.send_message(self.chat_id, text)
-        if self.client.status < CacheUser.START_PAYMENT:
+        if self.client.status <= CacheUser.START_PAYMENT:
             self.client.status = CacheUser.STARTED
             self.client.delete(CacheUser.COUNT)
             self.client.delete(CacheUser.PROMO_CODE)
             self.client.delete(CacheUser.NAME)
+            self.client.delete(CacheUser.ID)
             self.send_numeric_carousel('Сколько билетов вы хотите купить?')
 
     def send_payment_type_carousel(self, text):
@@ -187,7 +191,7 @@ class TelegramBot:
         bot.send_message(chat_id=self.chat_id, text=text, reply_markup=reply_markup)
 
     def send_another_payment_carousel(self, text):
-        custom_keyboard = [[self.go_to_payment_another]]
+        custom_keyboard = [[self.go_to_payment_another], [self.reset]]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
         bot.send_message(chat_id=self.chat_id, text=text, reply_markup=reply_markup)
 

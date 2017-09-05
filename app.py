@@ -31,7 +31,8 @@ def send_success():
     from user import CacheUser
     data = json.loads(request.data.decode('utf-8'))
     user = CacheUser(data['chat_id'], data['chat_id'])
-    bot.send_message(data['chat_id'], 'Ваша оплата прошла успешно. Ваш код:')
+    reply_markup = telegram.ReplyKeyboardRemove()
+    bot.send_message(data['chat_id'], 'Ваша оплата прошла успешно. Ваш код:', reply_markup=reply_markup)
     bot.send_message(data['chat_id'], '%s' % data['enter_code'])
     user.status = CacheUser.SUCCESS
     user.enter_code = data['enter_code']
@@ -61,4 +62,4 @@ if __name__ == '__main__':
     set_webhook()
     app.run(host='0.0.0.0',
             port=PORT,
-            debug=DUBUG)
+            debug=DEBUG)
