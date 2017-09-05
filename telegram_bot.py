@@ -56,7 +56,7 @@ class TelegramBot:
         if status is None:
             self.client.status = CacheUser.STARTED
             bot.send_message(self.chat_id, self.hello_message)
-            self.remove_keyboard_carousel('Сколько билетов вы хотите купить?')
+            self.send_numeric_carousel('Сколько билетов вы хотите купить?')
 
         elif self.client.is_promoter and status == CacheUser.STARTED:
             promo_code = self.message_text.lower().strip()
@@ -169,6 +169,11 @@ class TelegramBot:
 
     def remove_keyboard_carousel(self, text):
         reply_markup = telegram.ReplyKeyboardRemove()
+        bot.send_message(chat_id=self.chat_id, text=text, reply_markup=reply_markup)
+
+    def send_numeric_carousel(self, text):
+        custom_keyboard = [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']]
+        reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
         bot.send_message(chat_id=self.chat_id, text=text, reply_markup=reply_markup)
 
     def send_before_payment_carousel(self, text):
