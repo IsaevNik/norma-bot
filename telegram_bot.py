@@ -72,7 +72,7 @@ class TelegramBot:
 
         elif status == CacheUser.STARTED:
             value = self.message_text
-            if not settings.ALL_PROMOTER_HERE:
+            if not value.isdigit() and not settings.ALL_PROMOTER_HERE:
                 status = self.check_promoter(value)
                 if status:
                     bot.send_message(self.chat_id, 'Теперь вы промоутер Norma. Введите промокод (латинские символы и цифры)')
