@@ -89,7 +89,7 @@ class TelegramBot:
             self.client.status = CacheUser.ENTER_TYPE
             self.send_reset_carousel('Введите промокод или вернитесь в начало.')
 
-        elif status == CacheUser.ENTER_TYPE and self.message_text.lower() == self.reset:
+        elif status == CacheUser.ENTER_TYPE and self.message_text == self.reset:
             self.reset_all_progress()
 
         elif status == CacheUser.ENTER_TYPE:
