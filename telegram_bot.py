@@ -110,13 +110,13 @@ class TelegramBot:
             self.send_before_payment_carousel('Итоговая сумма: %s рублей.' % (self.client.count * settings.COST_WITHOUT_PROMO))
 
         elif status == CacheUser.ENTER_PROMOCODE and self.message_text == self.go_to_payment:
-            self.remove_keyboard_carousel('Введите имя по которому вы попадёте в список гостей.')
+            self.send_reset_carousel('Введите имя по которому вы попадёте в список гостей.')
             self.client.status = CacheUser.ENTER_NAME
 
         elif status == CacheUser.ENTER_PROMOCODE and self.message_text == self.reset:
-            self.client.status = CacheUser.STARTED
-            self.client.delete(CacheUser.COUNT)
-            self.client.delete(CacheUser.PROMO_CODE)
+            self.reset_all_progress()
+
+        elif status == CacheUser.ENTER_NAME and self.message_text == self.reset:
             self.reset_all_progress()
 
         elif status == CacheUser.ENTER_NAME:
@@ -127,15 +127,15 @@ class TelegramBot:
             data_with_link = self.norma_api.create_order(self.client)
             bot.send_message(self.chat_id, 'Для оплаты перейдите по ссылке {}'.format(data_with_link.get('link')))
             self.client.status = CacheUser.START_PAYMENT
-            self.send_another_payment_carousel('Платёж обрабатывается некоторое время, '
-                                               'можете попробовать оплатить ещё раз.')
+            self.send_another_payment_carousel('Ваш личный код будет отправлен после обработки платежа.'
+                                               ' Если ссылка не работает, вы можете получить еще одну.')
 
         elif status == CacheUser.START_PAYMENT and self.message_text == self.go_to_payment_another:
             data_with_link = self.norma_api.create_order(self.client)
             message = ('Для оплаты перейдите по ссылке {}'.format(data_with_link.get('link')))
             bot.send_message(self.chat_id, message)
-            self.send_another_payment_carousel('Платёж обрабатывается некоторое время, '
-                                               'можете попробовать оплатить ещё раз.')
+            self.send_another_payment_carousel('Ваш личный код будет отправлен после обработки платежа.'
+                                               ' Если ссылка не работает, вы можете получить еще одну.')
 
         elif status == CacheUser.START_PAYMENT and self.message_text == self.reset:
             self.reset_all_progress()
