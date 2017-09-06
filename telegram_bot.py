@@ -50,7 +50,7 @@ class TelegramBot:
 
     def execute_command(self):
         status = self.client.status
-        if settings.FINISH_SALE:
+        if settings.FINISH_SALE and not self.client.is_promoter:
             bot.send_message(self.chat_id, 'Предпродажа билетов окончена.')
             return
         if status is None:
@@ -87,7 +87,7 @@ class TelegramBot:
         elif status == CacheUser.ENTER_COUNT and self.client.count and \
                         self.message_text == self.with_promocode % (self.client.count * settings.COST_WITH_PROMO):
             self.client.status = CacheUser.ENTER_TYPE
-            self.remove_keyboard_carousel('Введите промокод или "назад" для возврата')
+            self.send_reset_carousel('Введите промокод или вернитесь в начало.')
 
         elif status == CacheUser.ENTER_TYPE and self.message_text.lower() == self.exit:
             self.reset_all_progress()
@@ -102,12 +102,12 @@ class TelegramBot:
             else:
                 self.client.status = CacheUser.ENTER_PROMOCODE
                 self.send_before_payment_carousel('Вы успешно ввели промокод. '
-                                                  'Итоговая сумма: %s рублей' % (self.client.count * settings.COST_WITH_PROMO))
+                                                  'Итоговая сумма: %s рублей.' % (self.client.count * settings.COST_WITH_PROMO))
 
         elif status == CacheUser.ENTER_COUNT and self.client.count and \
                         self.message_text == self.without_promocode % (self.client.count * settings.COST_WITHOUT_PROMO):
             self.client.status = CacheUser.ENTER_PROMOCODE
-            self.send_before_payment_carousel('Итоговая сумма: %s рублей' % (self.client.count * settings.COST_WITHOUT_PROMO))
+            self.send_before_payment_carousel('Итоговая сумма: %s рублей.' % (self.client.count * settings.COST_WITHOUT_PROMO))
 
         elif status == CacheUser.ENTER_PROMOCODE and self.message_text == self.go_to_payment:
             self.remove_keyboard_carousel('Введите имя по которому вы попадёте в список гостей.')
@@ -146,10 +146,10 @@ class TelegramBot:
                 statistic['guests_count'], statistic['total_payment']))
 
         elif status == CacheUser.SUCCESS and self.client.is_promoter:
-            self.send_statistic_carousel('Для получения статистики нажмите кнопку')
+            self.send_statistic_carousel('Для получения статистики нажмите кнопку.')
 
         elif status == CacheUser.SUCCESS:
-            bot.send_message(self.chat_id, 'Наше мероприятие состоится совсем скоро')
+            bot.send_message(self.chat_id, 'Наше мероприятие состоится совсем скоро.')
 
         else:
             self.reset_all_progress('Я не знаю такой команды, придётся начать всё заново.')
@@ -187,6 +187,11 @@ class TelegramBot:
 
     def send_statistic_carousel(self, text):
         custom_keyboard = [[self.get_statistic],]
+        reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
+        bot.send_message(chat_id=self.chat_id, text=text, reply_markup=reply_markup)
+
+    def send_reset_carousel(self, text):
+        custom_keyboard = [[self.reset],]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
         bot.send_message(chat_id=self.chat_id, text=text, reply_markup=reply_markup)
 
