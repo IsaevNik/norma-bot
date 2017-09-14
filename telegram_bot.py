@@ -2,6 +2,8 @@ import datetime
 import telegram
 import logging
 
+from telegram import TelegramError
+
 import settings
 
 from app import bot
@@ -43,6 +45,9 @@ class TelegramBot:
 
         try:
             self.execute_command()
+        except TelegramError as exc:
+            logging.exception(exc)
+            return
         except Exception as exc:
             self.reset_all_progress()
             logging.exception(exc)
