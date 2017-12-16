@@ -29,11 +29,14 @@ def webhook():
 @check_auth
 def send_success():
     from user import CacheUser
+    from telegram_bot import TelegramBot
     data = json.loads(request.data.decode('utf-8'))
     user = CacheUser(data['chat_id'], data['chat_id'])
     reply_markup = telegram.ReplyKeyboardRemove()
     bot.send_message(data['chat_id'], 'Ваша оплата прошла успешно. Ваш код:', reply_markup=reply_markup)
-    bot.send_message(data['chat_id'], '%s' % data['enter_code'])
+
+    TelegramBot.send_main_menu(data['chat_id'], text='%s' % data['enter_code'], with_buying=False)
+
     user.status = CacheUser.SUCCESS
     user.enter_code = data['enter_code']
     return json.dumps({'status': 'OK'})

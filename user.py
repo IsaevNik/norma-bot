@@ -9,9 +9,9 @@ r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=set
 class CacheUser:
     PREFIX = 'botclient'
     SEP = ':'
-    STARTED, ENTER_COUNT, ENTER_TYPE, ENTER_PROMOCODE,  = 0, 1, 2, 3
-    ENTER_NAME, START_PAYMENT, SUCCESS, FAIL = 4, 5, 6, 7
-    STATUSES = [STARTED, ENTER_COUNT, ENTER_PROMOCODE, START_PAYMENT, SUCCESS, FAIL, ENTER_TYPE, ENTER_NAME]
+    STARTED, BUY_TICKET, ENTER_COUNT, ENTER_TYPE, ENTER_PROMOCODE,  = 0, 1, 2, 3, 4
+    ENTER_NAME, START_PAYMENT, SUCCESS, FAIL = 5, 6, 7, 8
+    STATUSES = [STARTED, ENTER_COUNT, ENTER_PROMOCODE, START_PAYMENT, SUCCESS, FAIL, ENTER_TYPE, ENTER_NAME, BUY_TICKET]
     STATUS, CHAT_ID, COUNT, PROMO_CODE, NAME = 'status', 'chat_id', 'count', 'promo_code', 'name'
     ID, ENTER_CODE, IS_PROMOTER = 'id', 'enter_code', 'is_promoter'
 
@@ -20,6 +20,12 @@ class CacheUser:
         if not r.exists(self.key):
             r.hset(self.key, self.CHAT_ID, chat_id)
             r.hset(self.key, self.IS_PROMOTER, 0)
+
+    def refresh(self):
+        self.flush()
+        r.hset(self.key, self.CHAT_ID, self.user_id)
+        r.hset(self.key, self.IS_PROMOTER, 0)
+        r.hset(self.key, self.STATUS, 0)
 
     @property
     def key(self):
@@ -40,6 +46,12 @@ class CacheUser:
 
     def flush(self):
         r.delete(self.key)
+
+    @classmethod
+    def get_all(cls):
+        for key in r.keys('{}:*'.format(cls.PREFIX)):
+            chat_id = key.decode().split('{}:'.format(cls.PREFIX))[1]
+            yield cls(chat_id=chat_id, user_id=chat_id)
 
     @property
     def status(self):
