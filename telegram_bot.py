@@ -74,6 +74,7 @@ class TelegramBot:
             bot.send_message(self.chat_id, settings.LINE_UP_DETAIL)
 
         elif status in [CacheUser.STARTED, CacheUser.SUCCESS] and self.message_text == self.way:
+            bot.send(self.chat_id, 'Москва, Подкопаевский переулок, 4, стр 7')
             bot.send_location(self.chat_id, latitude=55.753724, longitude=37.641641)
 
         elif status == CacheUser.STARTED and self.message_text == self.buy_ticket:
