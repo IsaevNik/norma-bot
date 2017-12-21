@@ -25,10 +25,10 @@ class TelegramBot:
     line_up = 'Line up'
     facebook_link = 'Ссылка на мероприятие'
     get_statistic = 'Получить статистику'
-    hello_message = 'Вас приветствует команда NORMA! ' \
-                    'Здесь вы можете узнать подробную информацию, а так же преобрести билеты ' \
-                    'на предстоящее мероприятие.\n' \
-                    '29.12 - {}'.format(settings.EVENT_LINK)
+    hello_message = 'NORMA приготовила для вас предновогодний подарок - SHUBA, который состоится в RNDM bar! ' \
+                    'У пульта: S. RODINA, D. KOVYAZIN, KAROLINA BNV, R. PTASHENKO и другие артисты! ' \
+                    'До встречи 29.12 в 22:00!\n' \
+                    '{}'.format(settings.EVENT_LINK)
     map_url = 'https://scontent-arn2-1.xx.fbcdn.net/v/t1.0-9/21751747_239090976615586_6157852026952517567_n.jpg?' \
               'oh=ea7d664fac08b283de40aa0232082bd6&oe=5ABFADA8'
 
@@ -285,13 +285,11 @@ class TelegramBot:
         return data['name']
 
     @classmethod
-    def send_advert(cls, message=None, photo_url=None, with_reset=True):
-        message = message or settings.ADVERT_MESSAGE
-        photo_url = photo_url or settings.ADVERT_IMAGE
+    def send_advert(cls, message=None, with_reset=True):
+        message = message or cls.hello_message
         for user in CacheUser.get_all():
             try:
                 cls.send_main_menu(user.chat_id, message)
-                bot.send_photo(user.chat_id, photo_url)
                 time.sleep(1)
                 if with_reset:
                     user.refresh()
