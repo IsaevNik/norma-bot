@@ -14,10 +14,11 @@ ALL_PROMOTER_HERE = False
 FINISH_SALE = False
 DEBUG = True
 
-EVENT_LINK = 'https://www.facebook.com/events/360309737775370/'
+EVENT_LINK = 'https://www.facebook.com/events/169954023795743/'
 LINE_UP_DETAIL2 = '22:00 - 00:00\t\tNoname\n00:00 - 02:00\t\tNoname\n' \
                  '02:00 - 04:00\t\tNoname\n04:00 - 06:00\t\tNoname\n06:00 - 08:00\t\tNoname'
-LINE_UP_DETAIL = 'SOFIA RODINA\nKOVYAZIN D\nKAROLINA BNV\nROMA PTASHENKO\nПРОЕКТ B2B\nNIEL NOLAN\nDRY\nMONTIVIGANT'
+LINE_UP_DETAIL = 'Shutta\nEostra\nCooleejeff & Mogga Ocean (live!)\nMSCH\nN. Nolan\nVann Sergeev\nV. Komiakov\nATAVIST'
+ADVERT_IMAGE = 'https://normasound.ru/static/core/images/tempo.png'
 ADVERT_MESSAGE = 'Приветствуем вас, наши электро-странники! За окном зима, ' \
                  'конец года, холод и кругом снега. Мы решили, что не хотим ' \
                  'всеобщего обледенения, затем выбрали один из самых тёплых ' \
@@ -26,4 +27,3 @@ ADVERT_MESSAGE = 'Приветствуем вас, наши электро-ст�
                  'Если ты хочешь, чтобы температура твоего тела и тел твоих ' \
                  'любимых и близких пришла в NORMу, то скорее готовь свою шубу и забронируй дату, ' \
                  'а мы позаботимся о музыкальном сопровождении.'
-ADVERT_IMAGE = 'https://scontent-arn2-1.xx.fbcdn.net/v/t1.0-9/25498073_378574219250843_1558117774385397408_n.jpg?oh=6cdb6b17f5ea6dfce66104c400396cb5&oe=5AB16C04'
